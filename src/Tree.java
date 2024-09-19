@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Tree {
     // TODO
@@ -131,7 +132,73 @@ public class Tree {
         if (this.IsEmpty()) {
             return null;
         } else if (this.subtrees.isEmpty()) {
-            return (ArrayList<Integer>) this.root; // check cast
+            ArrayList<Integer> ret = new ArrayList<Integer>();
+            ret.addFirst((Integer) this.root);
+            return ret;
+        } else {
+            ArrayList<Integer> leaves = new ArrayList<>();
+            for (Tree t : subtrees) {
+                leaves.addAll(this.Leaves());
+            }
+            return leaves;
+        }
+    }
+
+    public boolean DeleteItem(int item) {
+        if (this.IsEmpty()) {
+            return false;
+        }
+        else if (this.root.equals(item)) {
+            this.DeleteItemHelper();
+            return true;
+        } else {
+            for (Tree t : subtrees) {
+                boolean deleted = t.DeleteItem(item);
+                if (deleted && t.IsEmpty()) {
+                    this.subtrees.remove(t);
+                    return true;
+                } else if (deleted) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
+    private void DeleteItemHelper() {
+        if (this.subtrees.isEmpty()) {
+            this.root = null;
+        } else {
+            Tree chosen_subtree = this.subtrees.removeLast();
+            this.root = chosen_subtree.root;
+            this.subtrees.addLast(chosen_subtree);
+        }
+    }
+
+    public void Insert(int item) {
+        if (this.IsEmpty()) {
+            this.root = item;
+        } else if (this.subtrees.isEmpty()) {
+            this.subtrees.add(new Tree(item, null));
+        } else {
+            int subtree_index = new Random().nextInt(this.subtrees.size());
+            this.subtrees.get(subtree_index).Insert(item);
+        }
+    }
+
+    public boolean InsertChild(Object item, Object parent) {
+        if (this.IsEmpty()) {
+            return false;
+        } else if (this.root == parent) {
+            this.subtrees.add(new Tree(item, null));
+            return true;
+        } else {
+            for (Tree t : subtrees) {
+                if (t.InsertChild(item, parent)) {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
