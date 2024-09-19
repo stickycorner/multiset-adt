@@ -6,6 +6,12 @@ public class TreeMultiSet extends MultiSet {
      *
      * @param item the item to add
      */
+    Tree tree;
+
+    public TreeMultiSet(Tree tree) {
+        this.tree = tree;
+    }
+
     @Override
     void add(Integer item) {
         // TODO complete this method
